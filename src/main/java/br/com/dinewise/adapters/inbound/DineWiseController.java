@@ -1,6 +1,11 @@
 package br.com.dinewise.adapters.inbound;
 
+import br.com.dinewise.application.exception.DineWiseResponseError;
 import br.com.dinewise.application.service.DineWiseService;
+import br.com.dinewise.domain.requests.LoginRequest;
+import br.com.dinewise.domain.requests.UserRequest;
+import br.com.dinewise.domain.responses.DineWiseResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,24 +18,25 @@ public class DineWiseController {
         this.service = service;
     }
 
-    //validacao de login
-    @GetMapping("/login")
-    public void login() {
-
+    @PostMapping("/login")
+    public ResponseEntity<DineWiseResponse> login(@RequestBody LoginRequest request) throws DineWiseResponseError {
+        return this.service.login(request);
     }
-    //criar usuario
-    @PostMapping("/user")
-    public void createUser() {
 
+
+    @PostMapping("/user")
+    public ResponseEntity<DineWiseResponse> createUser(@RequestBody UserRequest user) throws DineWiseResponseError {
+        return this.service.createUser(user);
     }
     //atualizar usuario
     @PutMapping("/user/{userId}")
-    public void updateUser() {
-
+    public ResponseEntity<DineWiseResponse> updateUser(@PathVariable Long userId, @RequestBody UserRequest user) throws DineWiseResponseError {
+        return this.service.updateUser(userId, user);
     }
     //deletar usuario
     @DeleteMapping("/user/{userId}")
-    public void deleteUser() {
+    public ResponseEntity<DineWiseResponse> deleteUser(@PathVariable Long userId) throws DineWiseResponseError {
+        return this.service.deleteUser(userId);
 
     }
 }

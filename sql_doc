@@ -11,14 +11,14 @@ CREATE TABLE users (
 
 CREATE TABLE addresses (
     id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL,
+    user_id BIGINT NOT NULL,
     public_place VARCHAR(255) NOT NULL,
     house_number VARCHAR(50),
     complement VARCHAR(255),
     neighborhood VARCHAR(100),
     city VARCHAR(100),
     state VARCHAR(50),
-    zip_codecode VARCHAR(20),
+    zip_code VARCHAR(20),
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
