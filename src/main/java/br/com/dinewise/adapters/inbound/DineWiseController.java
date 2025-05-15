@@ -23,20 +23,18 @@ public class DineWiseController {
         return this.service.login(request);
     }
 
-
     @PostMapping("/user")
     public ResponseEntity<DineWiseResponse> createUser(@RequestBody UserRequest user) throws DineWiseResponseError {
         return this.service.createUser(user);
     }
-    //atualizar usuario
+
     @PutMapping("/user/{userId}")
     public ResponseEntity<DineWiseResponse> updateUser(@PathVariable Long userId, @RequestBody UserRequest user) throws DineWiseResponseError {
         return this.service.updateUser(userId, user);
     }
-    //deletar usuario
+
     @DeleteMapping("/user/{userId}")
     public ResponseEntity<DineWiseResponse> deleteUser(@PathVariable Long userId) throws DineWiseResponseError {
         return this.service.deleteUser(userId);
-
     }
 }

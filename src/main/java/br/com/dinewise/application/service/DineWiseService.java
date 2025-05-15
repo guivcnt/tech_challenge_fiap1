@@ -24,7 +24,7 @@ public class DineWiseService {
     public ResponseEntity<DineWiseResponse> login(LoginRequest request) throws DineWiseResponseError {
 
         Optional<UserEntity> dbResponse = userRepository.login(request);
-
+// TODO: manter o padrao de resposta...
         if (dbResponse.isEmpty() || dbResponse == null) {
             return ResponseEntity.notFound().build();
         }
@@ -36,7 +36,7 @@ public class DineWiseService {
     public ResponseEntity<DineWiseResponse> createUser(UserRequest user) throws DineWiseResponseError {
 
         UserEntity dbResponse = userRepository.createUser(user);
-
+// TODO: manter o padrao de resposta...
         if (dbResponse == null) {
             return ResponseEntity.notFound().build();
         }
@@ -47,7 +47,7 @@ public class DineWiseService {
     public ResponseEntity<DineWiseResponse> updateUser(Long userId, UserRequest user) throws DineWiseResponseError {
 
         Optional<UserEntity> dbResponse = userRepository.updateUser(userId, user);
-
+// TODO: manter o padrao de resposta...
         if (dbResponse.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -58,7 +58,7 @@ public class DineWiseService {
     public ResponseEntity<DineWiseResponse> deleteUser(Long userId) throws DineWiseResponseError {
 
         Optional<UserEntity> dbResponse = userRepository.deleteUser(userId);
-
+// TODO: manter o padrao de resposta...
         if (dbResponse.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

@@ -5,6 +5,7 @@ import br.com.dinewise.application.exception.DineWiseResponseError;
 import br.com.dinewise.application.repository.UserRepository;
 import br.com.dinewise.domain.requests.LoginRequest;
 import br.com.dinewise.domain.requests.UserRequest;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 @SuppressWarnings("ALL")
 @Repository
+@Log4j2
 public class UserRepositoryImpl implements UserRepository {
 
     private final JdbcClient jdbcClient;
@@ -32,6 +34,7 @@ public class UserRepositoryImpl implements UserRepository {
             var login = request.login();
             var password = request.password();
 
+// TODO: retirar * from
             return this.jdbcClient
                     .sql("SELECT * FROM users WHERE login = :login AND password = :password")
                     .param("login", login)
@@ -40,6 +43,7 @@ public class UserRepositoryImpl implements UserRepository {
                     .optional();
         }
         catch (Exception e) {
+            log.error("Erro ao logar usuário -> {}", e.getMessage());
             throw new DineWiseResponseError("Error logging in", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -52,6 +56,7 @@ public class UserRepositoryImpl implements UserRepository {
             LocalDateTime dateTime = LocalDateTime.now();
             Timestamp timestampDateTime = Timestamp.valueOf(dateTime);
 
+// TODO: validar email/login/qq campo vazio.
             this.jdbcClient
                     .sql("INSERT INTO users (name, email, login, password, user_type, last_date_modified) VALUES (:name, :email, :login, :password, :userType, :lastDateModified)")
                     .param("name", request.name())
@@ -81,6 +86,7 @@ public class UserRepositoryImpl implements UserRepository {
             return new UserEntity(userId, request.name(), request.email(), request.login(), request.password(), request.userType(), dateTime);
         }
         catch (Exception e){
+            log.error("Erro ao cadastrar usuário -> {}", e.getMessage());
             throw new DineWiseResponseError("Error creating user", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -88,6 +94,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Optional<UserEntity> updateUser(Long userId, UserRequest request) throws DineWiseResponseError {
         try {
+// TODO: commit da transação?
             int rowsChanged = this.jdbcClient
                     .sql("""
                 UPDATE users
@@ -137,6 +144,7 @@ public class UserRepositoryImpl implements UserRepository {
             ));
         }
         catch (Exception e){
+            log.error("Erro ao atualizar usuário -> {}", e.getMessage());
             throw new DineWiseResponseError("Error updating user", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -156,6 +164,7 @@ public class UserRepositoryImpl implements UserRepository {
             return Optional.of(new UserEntity(userId, null, null, null, null, null, null));
         }
         catch (Exception e){
+            log.error("Erro ao deletar usuário -> {}", e.getMessage());
            throw new DineWiseResponseError("Error deleting user", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
