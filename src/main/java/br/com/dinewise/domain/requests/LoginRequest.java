@@ -1,3 +1,5 @@
 package br.com.dinewise.domain.requests;
 
-public record LoginRequest(String login, String password) { }
+import jakarta.validation.constraints.NotNull;
+
+public record LoginRequest(@NotNull String login, @NotNull String password) { }

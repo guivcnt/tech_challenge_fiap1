@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -34,9 +35,8 @@ public class UserRepositoryImpl implements UserRepository {
             var login = request.login();
             var password = request.password();
 
-// TODO: retirar * from
             return this.jdbcClient
-                    .sql("SELECT * FROM users WHERE login = :login AND password = :password")
+                    .sql("SELECT login, password FROM users WHERE login = :login AND password = :password")
                     .param("login", login)
                     .param("password", password)
                     .query(UserEntity.class)
@@ -48,6 +48,7 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
+    @Transactional
     @Override
     public UserEntity createUser(UserRequest request) throws DineWiseResponseError {
         try {
@@ -56,7 +57,6 @@ public class UserRepositoryImpl implements UserRepository {
             LocalDateTime dateTime = LocalDateTime.now();
             Timestamp timestampDateTime = Timestamp.valueOf(dateTime);
 
-// TODO: validar email/login/qq campo vazio.
             this.jdbcClient
                     .sql("INSERT INTO users (name, email, login, password, user_type, last_date_modified) VALUES (:name, :email, :login, :password, :userType, :lastDateModified)")
                     .param("name", request.name())
@@ -94,7 +94,6 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Optional<UserEntity> updateUser(Long userId, UserRequest request) throws DineWiseResponseError {
         try {
-// TODO: commit da transação?
             int rowsChanged = this.jdbcClient
                     .sql("""
                 UPDATE users

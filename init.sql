@@ -21,5 +21,3 @@ CREATE TABLE addresses (
     zip_code VARCHAR(20),
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
-
-insert into users values (2, 'flinstons', 'flinstons@gmail.com','flinstons', '1234', 'restaurant_owner', '2016-06-22 19:10:25-07')

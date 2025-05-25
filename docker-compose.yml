@@ -8,25 +8,24 @@ services:
     ports:
       - "8080:8080"
     environment:
-      # TODO: usar as variáveis de ambiente
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/dinewise
-      SPRING_DATASOURCE_USERNAME: dinewise_user
-      SPRING_DATASOURCE_PASSWORD: dinewise_password
+      SPRING_DATASOURCE_URL: ${URL}
+      SPRING_DATASOURCE_USERNAME: ${USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${PASSWORD}
     depends_on:
       - db
 
   db:
     image: postgres:17-alpine
     container_name: postgres_db
-    # rodar o script de inicialização
     environment:
-      POSTGRES_DB: dinewise
-      POSTGRES_USER: dinewise_user
-      POSTGRES_PASSWORD: dinewise_password
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${USERNAME}
+      POSTGRES_PASSWORD: ${PASSWORD}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
   postgres_data:
