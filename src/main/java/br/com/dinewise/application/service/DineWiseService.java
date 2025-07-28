@@ -3,6 +3,7 @@ package br.com.dinewise.application.service;
 import br.com.dinewise.application.entity.UserEntity;
 import br.com.dinewise.application.exception.DineWiseResponseError;
 import br.com.dinewise.application.repository.UserRepository;
+import br.com.dinewise.domain.requests.ChangePasswordRequest;
 import br.com.dinewise.domain.requests.LoginRequest;
 import br.com.dinewise.domain.requests.UserRequest;
 import br.com.dinewise.domain.responses.DineWiseResponse;
@@ -26,7 +27,7 @@ public class DineWiseService {
         Optional<UserEntity> dbResponse = userRepository.login(request);
 
         if (dbResponse.isEmpty() || dbResponse == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new DineWiseResponse("User not found", HttpStatus.NOT_FOUND));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new DineWiseResponse("User not found or password incorrect.", HttpStatus.FORBIDDEN));
         }
 
         return ResponseEntity.ok(new DineWiseResponse("Success!", HttpStatus.OK));
@@ -41,7 +42,7 @@ public class DineWiseService {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new DineWiseResponse("User not created", HttpStatus.NOT_FOUND));
         }
 
-        return ResponseEntity.accepted().body(new DineWiseResponse("Success creating user!", HttpStatus.CREATED));
+        return ResponseEntity.accepted().body(new DineWiseResponse("Success creating user! ID: " + dbResponse.getId(), HttpStatus.CREATED));
     }
 
     public ResponseEntity<DineWiseResponse> updateUser(Long userId, UserRequest user) throws DineWiseResponseError {
@@ -50,6 +51,17 @@ public class DineWiseService {
 
         if (dbResponse.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new DineWiseResponse("User not found", HttpStatus.NOT_FOUND));
+        }
+
+        return ResponseEntity.ok(new DineWiseResponse("Successfully updated user " + userId, HttpStatus.OK));
+    }
+
+    public ResponseEntity<DineWiseResponse> updatePassword(Long userId, ChangePasswordRequest passwordRequest) throws DineWiseResponseError {
+
+        Optional<UserEntity> dbResponse = userRepository.updatePassword(userId, passwordRequest);
+
+        if (dbResponse.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new DineWiseResponse("User not found or password incorrect.", HttpStatus.FORBIDDEN));
         }
 
         return ResponseEntity.ok(new DineWiseResponse("Successfully updated user " + userId, HttpStatus.OK));

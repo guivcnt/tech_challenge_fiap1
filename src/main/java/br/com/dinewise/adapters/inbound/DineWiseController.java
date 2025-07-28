@@ -2,6 +2,7 @@ package br.com.dinewise.adapters.inbound;
 
 import br.com.dinewise.application.exception.DineWiseResponseError;
 import br.com.dinewise.application.service.DineWiseService;
+import br.com.dinewise.domain.requests.ChangePasswordRequest;
 import br.com.dinewise.domain.requests.LoginRequest;
 import br.com.dinewise.domain.requests.UserRequest;
 import br.com.dinewise.domain.responses.DineWiseResponse;
@@ -31,6 +32,11 @@ public class DineWiseController {
     @PutMapping("/user/{userId}")
     public ResponseEntity<DineWiseResponse> updateUser(@PathVariable Long userId, @RequestBody UserRequest user) throws DineWiseResponseError {
         return this.service.updateUser(userId, user);
+    }
+
+    @PutMapping("/user/{userId}/password")
+    public ResponseEntity<DineWiseResponse> updatePassword(@PathVariable Long userId, @RequestBody ChangePasswordRequest passwordRequest) throws DineWiseResponseError {
+        return this.service.updatePassword(userId, passwordRequest);
     }
 
     @DeleteMapping("/user/{userId}")

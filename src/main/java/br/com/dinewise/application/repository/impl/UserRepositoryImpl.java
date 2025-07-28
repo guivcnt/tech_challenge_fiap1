@@ -3,6 +3,7 @@ package br.com.dinewise.application.repository.impl;
 import br.com.dinewise.application.entity.UserEntity;
 import br.com.dinewise.application.exception.DineWiseResponseError;
 import br.com.dinewise.application.repository.UserRepository;
+import br.com.dinewise.domain.requests.ChangePasswordRequest;
 import br.com.dinewise.domain.requests.LoginRequest;
 import br.com.dinewise.domain.requests.UserRequest;
 import lombok.extern.log4j.Log4j2;
@@ -141,6 +142,39 @@ public class UserRepositoryImpl implements UserRepository {
                     request.userType(),
                     LocalDateTime.now()
             ));
+        }
+        catch (Exception e){
+            log.error("Erro ao atualizar usuário -> {}", e.getMessage());
+            throw new DineWiseResponseError("Error updating user", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public Optional<UserEntity> updatePassword(Long userId, ChangePasswordRequest request) throws DineWiseResponseError {
+        try {
+            int rowsChanged = this.jdbcClient
+                    .sql("""
+                UPDATE users
+                SET password = :newPassword, 
+                    last_date_modified = CURRENT_TIMESTAMP
+                WHERE   id = :userId
+                    and password = :oldPassword
+            """)
+                    .param("newPassword", request.newPassword())
+                    .param("userId", userId)
+                    .param("oldPassword", request.oldPassword())
+                    .update();
+
+            if (rowsChanged == 0) {
+                return Optional.empty();
+            }
+
+            return this.jdbcClient
+                    .sql("SELECT id, password FROM users WHERE id = :userId AND password = :newPassword")
+                    .param("userId", userId)
+                    .param("newPassword", request.newPassword())
+                    .query(UserEntity.class)
+                    .optional();
         }
         catch (Exception e){
             log.error("Erro ao atualizar usuário -> {}", e.getMessage());
