@@ -3,9 +3,7 @@ package br.com.dinewise.application.repository.impl;
 import br.com.dinewise.application.entity.UserEntity;
 import br.com.dinewise.application.exception.DineWiseResponseError;
 import br.com.dinewise.application.repository.UserRepository;
-import br.com.dinewise.domain.requests.ChangePasswordRequest;
-import br.com.dinewise.domain.requests.LoginRequest;
-import br.com.dinewise.domain.requests.UserRequest;
+import br.com.dinewise.domain.requests.user.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -64,7 +62,7 @@ public class UserRepositoryImpl implements UserRepository {
                     .param("email", request.email())
                     .param("login", request.login())
                     .param("password", request.password())
-                    .param("userType", request.userType())
+                    .param("userType", request.userType().toString())
                     .param("lastDateModified", timestampDateTime)
                     .update(keyHolder);
 
@@ -84,7 +82,7 @@ public class UserRepositoryImpl implements UserRepository {
                     .param("zipCode", request.zipCode())
                     .update();
 
-            return new UserEntity(userId, request.name(), request.email(), request.login(), request.password(), request.userType(), dateTime);
+            return new UserEntity(userId, request.name(), request.email(), request.login(), request.password(), request.userType().toString(), dateTime);
         }
         catch (Exception e){
             log.error("Erro ao cadastrar usuário -> {}", e.getMessage());
@@ -139,7 +137,7 @@ public class UserRepositoryImpl implements UserRepository {
                     request.email(),
                     request.login(),
                     request.password(),
-                    request.userType(),
+                    request.userType().toString(),
                     LocalDateTime.now()
             ));
         }
@@ -173,6 +171,36 @@ public class UserRepositoryImpl implements UserRepository {
                     .sql("SELECT id, password FROM users WHERE id = :userId AND password = :newPassword")
                     .param("userId", userId)
                     .param("newPassword", request.newPassword())
+                    .query(UserEntity.class)
+                    .optional();
+        }
+        catch (Exception e){
+            log.error("Erro ao atualizar usuário -> {}", e.getMessage());
+            throw new DineWiseResponseError("Error updating user", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public Optional<UserEntity> updateType(Long userId, ChangeUserTypeRequest type) throws DineWiseResponseError {
+        try {
+            int rowsChanged = this.jdbcClient
+                    .sql("""
+                UPDATE users
+                SET user_type = :newType, 
+                    last_date_modified = CURRENT_TIMESTAMP
+                WHERE   id = :userId
+            """)
+                    .param("newType", type.userType().toString())
+                    .param("userId", userId)
+                    .update();
+
+            if (rowsChanged == 0) {
+                return Optional.empty();
+            }
+
+            return this.jdbcClient
+                    .sql("SELECT id, password FROM users WHERE id = :userId")
+                    .param("userId", userId)
                     .query(UserEntity.class)
                     .optional();
         }

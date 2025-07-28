@@ -1,10 +1,11 @@
 package br.com.dinewise.adapters.inbound;
 
 import br.com.dinewise.application.exception.DineWiseResponseError;
-import br.com.dinewise.application.service.DineWiseService;
-import br.com.dinewise.domain.requests.ChangePasswordRequest;
-import br.com.dinewise.domain.requests.LoginRequest;
-import br.com.dinewise.domain.requests.UserRequest;
+import br.com.dinewise.application.service.UserService;
+import br.com.dinewise.domain.requests.user.ChangePasswordRequest;
+import br.com.dinewise.domain.requests.user.ChangeUserTypeRequest;
+import br.com.dinewise.domain.requests.user.LoginRequest;
+import br.com.dinewise.domain.requests.user.UserRequest;
 import br.com.dinewise.domain.responses.DineWiseResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +14,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/dinewise")
 public class DineWiseController {
 
-    private final DineWiseService service;
+    private final UserService service;
 
-    public DineWiseController(DineWiseService service) {
+    public DineWiseController(UserService service) {
         this.service = service;
     }
 
@@ -37,6 +38,11 @@ public class DineWiseController {
     @PutMapping("/user/{userId}/password")
     public ResponseEntity<DineWiseResponse> updatePassword(@PathVariable Long userId, @RequestBody ChangePasswordRequest passwordRequest) throws DineWiseResponseError {
         return this.service.updatePassword(userId, passwordRequest);
+    }
+
+    @PutMapping("/user/{userId}/type")
+    public ResponseEntity<DineWiseResponse> updateType(@PathVariable Long userId, @RequestBody ChangeUserTypeRequest request) throws DineWiseResponseError {
+        return this.service.updateType(userId, request);
     }
 
     @DeleteMapping("/user/{userId}")
