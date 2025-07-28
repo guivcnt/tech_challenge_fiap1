@@ -1,7 +1,9 @@
 package br.com.dinewise.application.exception;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@Getter
 public class DineWiseResponseError extends Exception {
 
     private final String message;
@@ -10,14 +12,6 @@ public class DineWiseResponseError extends Exception {
     public DineWiseResponseError(String message, HttpStatus status) {
         this.message = message;
         this.status = status;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public HttpStatus getStatus() {
-        return status;
     }
 
 }

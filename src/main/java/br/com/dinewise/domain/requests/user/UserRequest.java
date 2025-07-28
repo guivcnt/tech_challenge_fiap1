@@ -7,7 +7,7 @@ public record UserRequest(
         @NotNull String email,
         @NotNull String login,
         @NotNull String password,
-        @NotNull UserTypeEnum userType,
+        @NotNull String userType,
         @NotNull String street,
         @NotNull String houseNumber,
         @NotNull String complement,

@@ -1,12 +1,20 @@
+CREATE TABLE user_types (
+    id SERIAL PRIMARY KEY,
+    type VARCHAR(50) UNIQUE NOT NULL,
+    last_date_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO user_types (type) VALUES ('restaurant_owner'), ('customer');
+
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     login VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    user_type VARCHAR(50) NOT NULL CHECK (user_type IN ('restaurant_owner', 'customer')),
+    user_type_id INT NOT NULL,
     last_date_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT chk_user_type CHECK (user_type IN ('restaurant_owner', 'customer'))
+    FOREIGN KEY (user_type_id) REFERENCES user_types (id) ON DELETE RESTRICT
 );
 
 CREATE TABLE addresses (

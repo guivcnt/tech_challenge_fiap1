@@ -1,23 +1,40 @@
 package br.com.dinewise.application.service;
 
 import br.com.dinewise.application.entity.UserEntity;
+import br.com.dinewise.application.entity.UserTypeEntity;
 import br.com.dinewise.application.exception.DineWiseResponseError;
+import br.com.dinewise.application.repository.UserTypeRepository;
 import br.com.dinewise.application.repository.UserRepository;
 import br.com.dinewise.domain.requests.user.*;
 import br.com.dinewise.domain.responses.DineWiseResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class UserService {
-
     private final UserRepository userRepository;
+    private final UserTypeRepository userTypeRepository;
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public ResponseEntity<DineWiseResponse> createUser(UserRequest user) throws DineWiseResponseError {
+        Optional<UserTypeEntity> idUserType = userTypeRepository.read(new UserTypeRequest(user.userType()));
+
+        if (idUserType.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new DineWiseResponse("User type not found", HttpStatus.NOT_FOUND));
+        }
+
+        UserEntity dbResponse = userRepository.createUser(user, idUserType.get().getId());
+
+        if (dbResponse == null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new DineWiseResponse("User not created", HttpStatus.CONFLICT));
+        }
+
+        return ResponseEntity.accepted().body(new DineWiseResponse("Success creating user! ID: " + dbResponse.getId(), HttpStatus.CREATED));
     }
 
     public ResponseEntity<DineWiseResponse> login(LoginRequest request) throws DineWiseResponseError {
@@ -32,20 +49,18 @@ public class UserService {
 
     }
 
-    public ResponseEntity<DineWiseResponse> createUser(UserRequest user) throws DineWiseResponseError {
-
-        UserEntity dbResponse = userRepository.createUser(user);
-
-        if (dbResponse == null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new DineWiseResponse("User not created", HttpStatus.NOT_FOUND));
-        }
-
-        return ResponseEntity.accepted().body(new DineWiseResponse("Success creating user! ID: " + dbResponse.getId(), HttpStatus.CREATED));
+    public ResponseEntity<List<UserEntity>> getAll() {
+        return ResponseEntity.accepted().body(userRepository.getAll());
     }
 
     public ResponseEntity<DineWiseResponse> updateUser(Long userId, UserRequest user) throws DineWiseResponseError {
+        Optional<UserTypeEntity> idUserType = userTypeRepository.read(new UserTypeRequest(user.userType()));
 
-        Optional<UserEntity> dbResponse = userRepository.updateUser(userId, user);
+        if (idUserType.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new DineWiseResponse("User type not found", HttpStatus.NOT_FOUND));
+        }
+
+        Optional<UserEntity> dbResponse = userRepository.updateUser(userId, user, idUserType.get().getId());
 
         if (dbResponse.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new DineWiseResponse("User not found", HttpStatus.NOT_FOUND));
@@ -65,9 +80,14 @@ public class UserService {
         return ResponseEntity.ok(new DineWiseResponse("Successfully updated user " + userId, HttpStatus.OK));
     }
 
-    public ResponseEntity<DineWiseResponse> updateType(Long userId, ChangeUserTypeRequest type) throws DineWiseResponseError {
+    public ResponseEntity<DineWiseResponse> updateUserType(Long userId, UserTypeRequest type) throws DineWiseResponseError {
+        Optional<UserTypeEntity> idUserType = userTypeRepository.read(new UserTypeRequest(type.userType()));
 
-        Optional<UserEntity> dbResponse = userRepository.updateType(userId, type);
+        if (idUserType.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new DineWiseResponse("User type not found", HttpStatus.NOT_FOUND));
+        }
+
+        Optional<UserEntity> dbResponse = userRepository.updateUserType(userId, idUserType.get().getId());
 
         if (dbResponse.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new DineWiseResponse("User not found", HttpStatus.NOT_FOUND));
