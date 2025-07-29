@@ -1,0 +1,860 @@
+{
+	"info": {
+		"_postman_id": "6634e595-fbdd-4196-a41b-fa54e6678ee5",
+		"name": "Tech Challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10962187"
+	},
+	"item": [
+		{
+			"name": "Fase 1",
+			"item": [
+				{
+					"name": "DELETAR USUARIO",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/dinewise/user/2",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"dinewise",
+								"user",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ATUALIZAR USUARIO",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"João Silva\",\r\n    \"email\": \"joao.silvaa@example.com\",\r\n    \"login\": \"joaosilvaa\",\r\n    \"password\": \"senha123\",\r\n    \"userType\": \"customer\",\r\n    \"street\": \"Rua das Flores\",\r\n    \"houseNumber\": \"123\",\r\n    \"complement\": \"Apto 45\",\r\n    \"neighborhood\": \"Centro\",\r\n    \"city\": \"São Paulo\",\r\n    \"state\": \"SP\",\r\n    \"zipCode\": \"01001-000\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/dinewise/user/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"dinewise",
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CRIAR USUARIO",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"João Silva\",\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"login\": \"{{$randomUserName}}\",\r\n    \"password\": \"senha123\",\r\n    \"userType\": \"restaurant_owner\",\r\n    \"street\": \"Rua das Flores\",\r\n    \"houseNumber\": \"123\",\r\n    \"complement\": \"Apto 45\",\r\n    \"neighborhood\": \"Centro\",\r\n    \"city\": \"São Paulo\",\r\n    \"state\": \"SP\",\r\n    \"zipCode\": \"01001-000\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/dinewise/user",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"dinewise",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CRIAR USUARIO (NAO RANDOM)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"João Silva\",\r\n    \"email\": \"email@email.com\",\r\n    \"login\": \"joaosilva\",\r\n    \"password\": \"senha123\",\r\n    \"userType\": \"customer\",\r\n    \"street\": \"Rua das Flores\",\r\n    \"houseNumber\": \"123\",\r\n    \"complement\": \"Apto 45\",\r\n    \"neighborhood\": \"Centro\",\r\n    \"city\": \"São Paulo\",\r\n    \"state\": \"SP\",\r\n    \"zipCode\": \"01001-000\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/dinewise/user",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"dinewise",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LOGIN",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\": \"joaosilva\",\r\n    \"password\": \"senha123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/dinewise/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"dinewise",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Fase 1 - Correção",
+			"item": [
+				{
+					"name": "TROCAR SENHA",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldPassword\": \"senha123\",\r\n    \"newPassword\": \"senha124\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/dinewise/user/1/password",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"dinewise",
+								"user",
+								"1",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LISTAR USUÁRIOS",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/dinewise/user",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"dinewise",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "USUARIO (id)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/dinewise/user/id/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"dinewise",
+								"user",
+								"id",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "USUARIO (login)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/dinewise/user/login/joaosilva",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"dinewise",
+								"user",
+								"login",
+								"joaosilva"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "> O projeto ficou muito bom, parabéns para a equipe. Faltou apenas a implementação do serviço de troca de senha do usuário."
+		},
+		{
+			"name": "Fase 2",
+			"item": [
+				{
+					"name": "Mudanças referente a refatoração",
+					"item": [
+						{
+							"name": "CRIAR USUARIO",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"João Silva\",\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"login\": \"{{$randomUserName}}\",\r\n    \"password\": \"senha123\",\r\n    \"userType\": \"restaurant_owner\",\r\n    \"address\": {\r\n        \"street\": \"Rua das Flores\",\r\n        \"houseNumber\": \"123\",\r\n        \"complement\": \"Apto 45\",\r\n        \"neighborhood\": \"Centro\",\r\n        \"city\": \"São Paulo\",\r\n        \"state\": \"SP\",\r\n        \"zipCode\": \"01001-000\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/api/v1/dinewise/user",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"dinewise",
+										"user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CRIAR USUARIO (NAO RANDOM)",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"João Silva\",\r\n    \"email\": \"email@email.com\",\r\n    \"login\": \"joaosilva\",\r\n    \"password\": \"senha123\",\r\n    \"userType\": \"customer\",\r\n    \"address\": {\r\n        \"street\": \"Rua das Flores\",\r\n        \"houseNumber\": \"123\",\r\n        \"complement\": \"Apto 45\",\r\n        \"neighborhood\": \"Centro\",\r\n        \"city\": \"São Paulo\",\r\n        \"state\": \"SP\",\r\n        \"zipCode\": \"01001-000\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/api/v1/dinewise/user",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"dinewise",
+										"user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "LOGIN (path diferente)",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"login\": \"joaosilva\",\r\n    \"password\": \"senha123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/api/v1/dinewise/user/login",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"dinewise",
+										"user",
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "TIPO USUÁRIO",
+					"item": [
+						{
+							"name": "TROCAR TIPO DO USUÁRIO",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"userType\": \"restaurant_owner\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/api/v1/dinewise/user/1/type",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"dinewise",
+										"user",
+										"1",
+										"type"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CRIAR TIPO",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"userType\": \"teste34\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/api/v1/dinewise/userType",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"dinewise",
+										"userType"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ATUALIZAR TIPO",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"userType\": \"bblabla\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/api/v1/dinewise/userType/4",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"dinewise",
+										"userType",
+										"4"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "LISTAR TIPOS",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/v1/dinewise/userType",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"dinewise",
+										"userType"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETAR TIPO",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/v1/dinewise/userType/1",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"dinewise",
+										"userType",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "RESTAURANTE",
+					"item": [
+						{
+							"name": "CRIAR RESTAURANTE",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Churrasic Park\",\r\n    \"typeCuisine\": \"{{$randomAdjective}}\",\r\n    \"userLoginOwner\": \"joaosilva\",\r\n    \"operationHours\": \"08:00 - 18:00\",\r\n    \"address\": {\r\n        \"street\": \"{{$randomStreetAddress}}\",\r\n        \"houseNumber\": \"123\",\r\n        \"complement\": \"Apto 45\",\r\n        \"neighborhood\": \"Centro\",\r\n        \"city\": \"{{$randomCity}}\",\r\n        \"state\": \"SP\",\r\n        \"zipCode\": \"{{$randomCountryCode}}\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/api/v1/dinewise/restaurant",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"dinewise",
+										"restaurant"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "LISTAR RESTAURANTES",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/v1/dinewise/restaurant",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"dinewise",
+										"restaurant"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "RESTAURANTE",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/v1/dinewise/restaurant/2",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"dinewise",
+										"restaurant",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ATUALIZAR RESTAURANTE",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Churrasic Park dasds\",\r\n    \"typeCuisine\": \"{{$randomAdjective}}\",\r\n    \"userLoginOwner\": \"Margaret_OConnell\",\r\n    \"operationHours\": \"08:00 - 18:00\",\r\n    \"address\": {\r\n        \"street\": \"{{$randomStreetAddress}}\",\r\n        \"houseNumber\": \"123\",\r\n        \"complement\": \"Apto 45\",\r\n        \"neighborhood\": \"Centro\",\r\n        \"city\": \"{{$randomCity}}\",\r\n        \"state\": \"SP\",\r\n        \"zipCode\": \"{{$randomCountryCode}}\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/api/v1/dinewise/restaurant/2",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"dinewise",
+										"restaurant",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETAR RESTAURANTE",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/v1/dinewise/restaurant/2",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"dinewise",
+										"restaurant",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "CARDÁPIO",
+					"item": [
+						{
+							"name": "CRIAR ITEM",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"{{$randomUserName}}\",\r\n    \"description\": \"{{$randomJobDescriptor}}\",\r\n    \"price\": \"{{$randomPrice}}\",\r\n    \"onlyForDelivery\": \"{{$randomBoolean}}\",\r\n    \"imagePath\": \"{{$randomFilePath}}\",\r\n    \"restaurantId\": \"1\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/api/v1/dinewise/menu",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"dinewise",
+										"menu"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "LISTAR ITENS",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/v1/dinewise/menu",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"dinewise",
+										"menu"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ITEM",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/v1/dinewise/menu/1",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"dinewise",
+										"menu",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ATUALIZAR ITEM",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"{{$randomUserName}}\",\r\n    \"description\": \"{{$randomJobDescriptor}}\",\r\n    \"price\": \"{{$randomPrice}}\",\r\n    \"onlyForDelivery\": \"{{$randomBoolean}}\",\r\n    \"imagePath\": \"{{$randomFilePath}}\",\r\n    \"restaurantId\": \"1\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/api/v1/dinewise/menu/1",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"dinewise",
+										"menu",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETAR ITEM",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/v1/dinewise/menu/1",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"dinewise",
+										"menu",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "ROTA NÃO EXISTENTE",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/dinewise/dadasda",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"dinewise",
+								"dadasda"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

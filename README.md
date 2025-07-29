@@ -76,5 +76,5 @@ POSTGRES_USER e POSTGRES_PASSWORD: Credenciais para acessar o banco.
 
 Link para a Collection do Postman
 
-https://github.com/guivcnt/tech_challenge_fiap1/blob/main/Fase%201.postman_collection.json
+https://github.com/guivcnt/tech_challenge_fiap1/blob/main/Tech%20Challenge.postman_collection.json
 
