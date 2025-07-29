@@ -41,3 +41,15 @@ CREATE TABLE restaurants (
     FOREIGN KEY (user_id_owner) REFERENCES users (id),
     FOREIGN KEY (address_id) REFERENCES addresses (id)
 );
+
+CREATE TABLE menu (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    price DECIMAL(10,2) NOT NULL,
+    only_for_delivery BOOLEAN DEFAULT FALSE,
+    image_path VARCHAR(500),
+    last_date_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    restaurant_id INT NOT NULL,
+    FOREIGN KEY (restaurant_id) REFERENCES restaurants (id)
+);

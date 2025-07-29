@@ -71,7 +71,7 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
             return new RestaurantEntity(id, request.name(), request.typeCuisine(), request.operationHours(), idUser, addressEntity.getId(), dateTime);
 
         } catch (DuplicateKeyException e){
-            log.error("Restaurante já existente -> {}", e.getMessage());
+            log.error("Restaurante já existente -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("Restaurant already exists", HttpStatus.CONFLICT);
 
         } catch (Exception e){
@@ -190,7 +190,7 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
             return Optional.of(new RestaurantEntity(id, null, null, null, null, null, null));
         }
         catch (Exception e){
-            log.error("Erro ao deletar restaurante -> {}", e.getMessage());
+            log.error("Erro ao deletar restaurante -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("Error deleting restaurant", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

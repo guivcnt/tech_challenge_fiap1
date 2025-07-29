@@ -46,11 +46,11 @@ public class UserTypeRepositoryImpl implements UserTypeRepository {
             return new UserTypeEntity(typeId, request.userType(), dateTime);
 
         } catch (DuplicateKeyException e) {
-            log.error("Tipo de usuário já cadastrado -> {}", e.getMessage());
+            log.error("Tipo de usuário já cadastrado -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("User type already exists", HttpStatus.CONFLICT);
 
         } catch (Exception e){
-            log.error("Erro ao cadastrar o tipo do usuário -> {}", e.getMessage());
+            log.error("Erro ao cadastrar o tipo do usuário -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("Error creating user type", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -93,7 +93,7 @@ public class UserTypeRepositoryImpl implements UserTypeRepository {
             return this.read(request);
         }
         catch (Exception e){
-            log.error("Erro ao atualizar o tipo -> {}", e.getMessage());
+            log.error("Erro ao atualizar o tipo -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("Error updating type", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -113,7 +113,7 @@ public class UserTypeRepositoryImpl implements UserTypeRepository {
             return Optional.of(new UserTypeEntity(id, null, null));
         }
         catch (Exception e){
-            log.error("Erro ao deletar usuário -> {}", e.getMessage());
+            log.error("Erro ao deletar usuário -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("Error deleting user", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
