@@ -3,9 +3,12 @@ package br.com.dinewise.application.service;
 import br.com.dinewise.application.entity.UserEntity;
 import br.com.dinewise.application.entity.UserTypeEntity;
 import br.com.dinewise.application.exception.DineWiseResponseError;
-import br.com.dinewise.application.repository.UserTypeRepository;
 import br.com.dinewise.application.repository.UserRepository;
-import br.com.dinewise.domain.requests.user.*;
+import br.com.dinewise.application.repository.UserTypeRepository;
+import br.com.dinewise.domain.requests.user.ChangePasswordRequest;
+import br.com.dinewise.domain.requests.user.LoginRequest;
+import br.com.dinewise.domain.requests.user.UserRequest;
+import br.com.dinewise.domain.requests.user.UserTypeRequest;
 import br.com.dinewise.domain.responses.DineWiseResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -51,6 +54,14 @@ public class UserService {
 
     public ResponseEntity<List<UserEntity>> getAll() {
         return ResponseEntity.accepted().body(userRepository.getAll());
+    }
+
+    public ResponseEntity<Optional<UserEntity>> get(Long userId) throws DineWiseResponseError {
+        return ResponseEntity.accepted().body(userRepository.get(userId));
+    }
+
+    public ResponseEntity<Optional<UserEntity>> get(String userLogin) throws DineWiseResponseError {
+        return ResponseEntity.accepted().body(userRepository.get(userLogin));
     }
 
     public ResponseEntity<DineWiseResponse> updateUser(Long userId, UserRequest user) throws DineWiseResponseError {

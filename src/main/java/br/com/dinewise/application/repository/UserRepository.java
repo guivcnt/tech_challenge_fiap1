@@ -12,6 +12,8 @@ public interface UserRepository {
     UserEntity createUser(UserRequest request, Long userType) throws DineWiseResponseError;
     Optional<UserEntity> login(LoginRequest request) throws DineWiseResponseError;
     List<UserEntity> getAll();
+    Optional<UserEntity> get(Long userId) throws DineWiseResponseError;
+    Optional<UserEntity> get(String login) throws DineWiseResponseError;
     Optional<UserEntity> updateUser(Long userId, UserRequest request, Long userType)throws DineWiseResponseError;
     Optional<UserEntity> updatePassword(Long userId, ChangePasswordRequest request) throws DineWiseResponseError;
     Optional<UserEntity> updateUserType(Long userId, Long userType) throws DineWiseResponseError;

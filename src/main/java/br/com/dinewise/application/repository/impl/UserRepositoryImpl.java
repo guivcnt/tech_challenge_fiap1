@@ -1,10 +1,12 @@
 package br.com.dinewise.application.repository.impl;
 
 import br.com.dinewise.application.entity.UserEntity;
-import br.com.dinewise.application.entity.UserTypeEntity;
 import br.com.dinewise.application.exception.DineWiseResponseError;
+import br.com.dinewise.application.repository.AddressRepository;
 import br.com.dinewise.application.repository.UserRepository;
-import br.com.dinewise.domain.requests.user.*;
+import br.com.dinewise.domain.requests.user.ChangePasswordRequest;
+import br.com.dinewise.domain.requests.user.LoginRequest;
+import br.com.dinewise.domain.requests.user.UserRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.dao.DuplicateKeyException;
@@ -27,41 +29,35 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
     private final JdbcClient jdbcClient;
+    private final AddressRepository addressRepository;
 
     @Transactional
     @Override
     public UserEntity createUser(UserRequest request, Long userType) throws DineWiseResponseError {
         try {
+            var addressEntity = this.addressRepository.create(request.address());
+
             KeyHolder keyHolder = new GeneratedKeyHolder();
 
             LocalDateTime dateTime = LocalDateTime.now();
             Timestamp timestampDateTime = Timestamp.valueOf(dateTime);
 
-            var teste = this.jdbcClient
-                    .sql("INSERT INTO users (name, email, login, password, user_type_id, last_date_modified) VALUES (:name, :email, :login, :password, :userType, :lastDateModified)")
+            this.jdbcClient
+                    .sql("""
+                        INSERT INTO users (name, email, login, password, user_type_id, address_id, last_date_modified)
+                        VALUES (:name, :email, :login, :password, :userType, :addressId, :lastDateModified)
+                    """)
                     .param("name", request.name())
                     .param("email", request.email())
                     .param("login", request.login())
                     .param("password", request.password())
                     .param("userType", userType)
+                    .param("addressId", addressEntity.getId())
                     .param("lastDateModified", timestampDateTime)
                     .update(keyHolder);
 
             Map<String, Object> keys = keyHolder.getKeys();
             Long userId = (keys != null && keys.containsKey("id")) ? ((Number) keys.get("id")).longValue() : null;
-
-            this.jdbcClient
-                    .sql("INSERT INTO addresses (user_id, public_place, house_number, complement,  neighborhood, city, state, zip_code) " +
-                            "VALUES (:userId, :publicPlace, :houseNumber, :complement, :neighborhood, :city, :state, :zipCode)")
-                    .param("userId", userId)
-                    .param("publicPlace", request.street())
-                    .param("houseNumber", request.houseNumber())
-                    .param("complement", request.complement())
-                    .param("neighborhood", request.neighborhood())
-                    .param("city", request.city())
-                    .param("state", request.state())
-                    .param("zipCode", request.zipCode())
-                    .update();
 
             return new UserEntity(userId, request.name(), request.email(), request.login(), request.password(), request.userType(), dateTime);
 
@@ -101,6 +97,43 @@ public class UserRepositoryImpl implements UserRepository {
                 .list();
     }
 
+    public Optional<UserEntity> get(Long userId) throws DineWiseResponseError {
+        try {
+            return this.jdbcClient
+                    .sql("""
+                        SELECT u.id, name, email, login, t.type userType, u.last_date_modified 
+                        FROM users as u JOIN user_types as t on t.id = u.user_type_id
+                        WHERE u.id = :userId
+                    """)
+                    .param("userId", userId)
+                    .query(UserEntity.class)
+                    .optional();
+        }
+        catch (Exception e) {
+            log.error("Erro ao retornar usuário -> {}", e.getMessage());
+            throw new DineWiseResponseError("Error get user", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public Optional<UserEntity> get(String login) throws DineWiseResponseError {
+        try {
+            return this.jdbcClient
+                    .sql("""
+                        SELECT u.id, name, email, login, t.type userType, u.last_date_modified 
+                        FROM users as u JOIN user_types as t on t.id = u.user_type_id
+                        WHERE u.login = :login
+                    """)
+                    .param("login", login)
+                    .query(UserEntity.class)
+                    .optional();
+        }
+        catch (Exception e) {
+            log.error("Erro ao retornar usuário -> {}", e.getMessage());
+            throw new DineWiseResponseError("Error get user", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Transactional
     @Override
     public Optional<UserEntity> updateUser(Long userId, UserRequest request, Long userType) throws DineWiseResponseError {
         try {
@@ -119,22 +152,22 @@ public class UserRepositoryImpl implements UserRepository {
                     .param("userId", userId)
                     .update();
 
-
-            // atualizar o end. pela pk user_id
             this.jdbcClient
                     .sql("""
                 UPDATE addresses
                 SET public_place = :publicPlace, house_number = :houseNumber, complement = :complement, 
                     neighborhood = :neighborhood, city = :city, state = :state, zip_code = :zipCode
-                WHERE user_id = :userId
+                FROM users us
+                WHERE us.user_id = :userId and 
+                      us.address_id = addresses.id
             """)
-                    .param("publicPlace", request.street())
-                    .param("houseNumber", request.houseNumber())
-                    .param("complement", request.complement())
-                    .param("neighborhood", request.neighborhood())
-                    .param("city", request.city())
-                    .param("state", request.state())
-                    .param("zipCode", request.zipCode())
+                    .param("publicPlace", request.address().street())
+                    .param("houseNumber", request.address().houseNumber())
+                    .param("complement", request.address().complement())
+                    .param("neighborhood", request.address().neighborhood())
+                    .param("city", request.address().city())
+                    .param("state", request.address().state())
+                    .param("zipCode", request.address().zipCode())
                     .param("userId", userId)
                     .update();
 
@@ -225,7 +258,12 @@ public class UserRepositoryImpl implements UserRepository {
     public Optional<UserEntity> deleteUser(Long userId) throws DineWiseResponseError {
         try {
             int rowsChanged = this.jdbcClient
-                    .sql("DELETE FROM users WHERE id = :userId")
+                    .sql("""
+                        DELETE FROM addresses
+                        USING users
+                        WHERE users.address_id = addresses.id
+                          AND users.id = :userId;
+                    """)
                     .param("userId", userId)
                     .update();
 

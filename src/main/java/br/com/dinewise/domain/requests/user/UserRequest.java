@@ -1,5 +1,6 @@
 package br.com.dinewise.domain.requests.user;
 
+import br.com.dinewise.domain.requests.address.AddressRequest;
 import jakarta.validation.constraints.NotNull;
 
 public record UserRequest(
@@ -8,10 +9,5 @@ public record UserRequest(
         @NotNull String login,
         @NotNull String password,
         @NotNull String userType,
-        @NotNull String street,
-        @NotNull String houseNumber,
-        @NotNull String complement,
-        @NotNull String neighborhood,
-        @NotNull String city,
-        @NotNull String state,
-        @NotNull String zipCode ) { }
+        @NotNull AddressRequest address
+) { }

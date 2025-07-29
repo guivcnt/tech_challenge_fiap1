@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/dinewise/user")
@@ -30,6 +31,16 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<UserEntity>> getAllUsers() {
         return this.userService.getAll();
+    }
+
+    @GetMapping("/id/{userId}")
+    public ResponseEntity<Optional<UserEntity>> getUser(@PathVariable Long userId) throws DineWiseResponseError {
+        return this.userService.get(userId);
+    }
+
+    @GetMapping("/login/{userLogin}")
+    public ResponseEntity<Optional<UserEntity>> getUser(@PathVariable String userLogin) throws DineWiseResponseError {
+        return this.userService.get(userLogin);
     }
 
     @PutMapping("/{userId}")
