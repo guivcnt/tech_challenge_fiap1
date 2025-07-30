@@ -18,5 +18,6 @@ public class UserEntity {
     private String login;
     private String password;
     private String userType;
+    private Long addressId;
     private LocalDateTime lastDateModified;
 }

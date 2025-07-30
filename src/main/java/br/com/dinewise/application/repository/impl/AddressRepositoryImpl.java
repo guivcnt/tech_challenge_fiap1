@@ -1,6 +1,7 @@
 package br.com.dinewise.application.repository.impl;
 
 import br.com.dinewise.application.entity.AddressEntity;
+import br.com.dinewise.application.entity.MenuEntity;
 import br.com.dinewise.application.exception.DineWiseResponseError;
 import br.com.dinewise.application.repository.AddressRepository;
 import br.com.dinewise.domain.requests.address.AddressRequest;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 @Log4j2
@@ -51,6 +53,42 @@ public class AddressRepositoryImpl implements AddressRepository {
         } catch (Exception e) {
             log.error("Erro ao cadastrar endereço -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("Error creating address", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public Optional<AddressEntity> get(Long id) throws DineWiseResponseError {
+        try {
+            return this.jdbcClient
+                    .sql("""
+                    SELECT iid id, public_place publicPlace, house_number houseNumber, complement complement,
+                           neighborhood neighborhood, city city, state state, zip_code zipCode, last_date_modified lastDateModified
+                    FROM addresses
+                    WHERE id = :id
+                """)
+                    .param("id", id)
+                    .query(AddressEntity.class)
+                    .optional();
+        }
+        catch (Exception e) {
+            log.error("Erro ao retornar um endereço -> {} / {}", e.getMessage(), e.getCause());
+            throw new DineWiseResponseError("Error get address", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public Optional<AddressEntity> delete(Long id) throws DineWiseResponseError {
+        try {
+            this.jdbcClient
+                    .sql("DELETE FROM addresses WHERE id = :addressId")
+                    .param("addressId", id)
+                    .update();
+
+            return Optional.of(new AddressEntity(id, null, null, null, null, null, null, null, null));
+
+        } catch (Exception e) {
+            log.error("Erro ao deletar endereço -> {} / {}", e.getMessage(), e.getCause());
+            throw new DineWiseResponseError("Error deleting address", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

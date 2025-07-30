@@ -9,6 +9,7 @@ import br.com.dinewise.domain.requests.user.LoginRequest;
 import br.com.dinewise.domain.requests.user.UserRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -59,7 +60,7 @@ public class UserRepositoryImpl implements UserRepository {
             Map<String, Object> keys = keyHolder.getKeys();
             Long userId = (keys != null && keys.containsKey("id")) ? ((Number) keys.get("id")).longValue() : null;
 
-            return new UserEntity(userId, request.name(), request.email(), request.login(), request.password(), request.userType(), dateTime);
+            return new UserEntity(userId, request.name(), request.email(), request.login(), request.password(), request.userType(), addressEntity.getId(), dateTime);
 
         } catch (DuplicateKeyException e){
             log.error("Usuário já existente -> {}", e.getMessage());
@@ -92,7 +93,10 @@ public class UserRepositoryImpl implements UserRepository {
 
     public List<UserEntity> getAll() {
         return this.jdbcClient
-                .sql("SELECT u.id, name, email, login, t.type userType, u.last_date_modified FROM users as u JOIN user_types as t on t.id = u.user_type_id")
+                .sql("""
+                    SELECT u.id, name, email, login, t.type userType, u.last_date_modified, u.address_id addressId
+                    FROM users as u JOIN user_types as t on t.id = u.user_type_id
+                """)
                 .query(UserEntity.class)
                 .list();
     }
@@ -101,7 +105,7 @@ public class UserRepositoryImpl implements UserRepository {
         try {
             return this.jdbcClient
                     .sql("""
-                        SELECT u.id, name, email, login, t.type userType, u.last_date_modified 
+                        SELECT u.id, name, email, login, t.type userType, u.last_date_modified, u.address_id addressId
                         FROM users as u JOIN user_types as t on t.id = u.user_type_id
                         WHERE u.id = :userId
                     """)
@@ -119,7 +123,7 @@ public class UserRepositoryImpl implements UserRepository {
         try {
             return this.jdbcClient
                     .sql("""
-                        SELECT u.id, name, email, login, t.type userType, u.last_date_modified 
+                        SELECT u.id, name, email, login, t.type userType, u.last_date_modified, u.address_id addressId
                         FROM users as u JOIN user_types as t on t.id = u.user_type_id
                         WHERE u.login = :login
                     """)
@@ -175,6 +179,8 @@ public class UserRepositoryImpl implements UserRepository {
                 return Optional.empty();
             }
 
+            var entity = this.get(userId);
+
             return Optional.of(new UserEntity(
                     userId,
                     request.name(),
@@ -182,6 +188,7 @@ public class UserRepositoryImpl implements UserRepository {
                     request.login(),
                     request.password(),
                     request.userType(),
+                    entity.get().getAddressId(),
                     LocalDateTime.now()
             ));
         }
@@ -255,25 +262,33 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<UserEntity> deleteUser(Long userId) throws DineWiseResponseError {
+    public Optional<UserEntity> deleteUser(Long id) throws DineWiseResponseError {
         try {
+            var entity = this.get(id);
+
+            if (entity.isEmpty()) {
+                log.error("Usuário com ID {} não encontrado para deleção", id);
+                return Optional.empty();
+            }
+
             int rowsChanged = this.jdbcClient
-                    .sql("""
-                        DELETE FROM addresses
-                        USING users
-                        WHERE users.address_id = addresses.id
-                          AND users.id = :userId;
-                    """)
-                    .param("userId", userId)
+                    .sql("DELETE FROM users WHERE users.id = :userId")
+                    .param("userId", id)
                     .update();
 
             if (rowsChanged == 0) {
                 return Optional.empty();
             }
 
-            return Optional.of(new UserEntity(userId, null, null, null, null, null, null));
-        }
-        catch (Exception e){
+            addressRepository.delete(entity.get().getAddressId());
+
+            return Optional.of(new UserEntity(id, null, null, null, null, null, null, null));
+
+        } catch (DataIntegrityViolationException e) {
+            log.error("Usuário está vinculado a um restaurante -> {} / {}", e.getMessage(), e.getCause());
+            throw new DineWiseResponseError("User is linked to a restaurant", HttpStatus.CONFLICT);
+
+        } catch (Exception e) {
             log.error("Erro ao deletar usuário -> {}", e.getMessage());
             throw new DineWiseResponseError("Error deleting user", HttpStatus.INTERNAL_SERVER_ERROR);
         }

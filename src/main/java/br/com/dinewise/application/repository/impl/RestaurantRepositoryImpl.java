@@ -173,19 +173,26 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
     @Override
     public Optional<RestaurantEntity> delete(Long id) throws DineWiseResponseError {
         try {
+            var entity = this.get(id);
+
+            if (entity.isEmpty()) {
+                log.error("Restaurante com ID {} não encontrado para deleção", id);
+                return Optional.empty();
+            }
+
             int rowsChanged = this.jdbcClient
-                    .sql("""
-                        DELETE FROM addresses
-                        USING restaurants
-                        WHERE restaurants.address_id = addresses.id
-                          AND restaurants.id = :id;
-                    """)
-                    .param("id", id)
-                    .update();
+                .sql("""
+                    DELETE FROM restaurants
+                    WHERE id = :id;
+                """)
+                .param("id", id)
+                .update();
 
             if (rowsChanged == 0) {
                 return Optional.empty();
             }
+
+            addressRepository.delete(entity.get().getAddressId());
 
             return Optional.of(new RestaurantEntity(id, null, null, null, null, null, null));
         }
