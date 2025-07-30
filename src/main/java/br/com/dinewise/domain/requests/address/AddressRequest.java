@@ -10,4 +10,5 @@ public record AddressRequest(
         @NotNull String city,
         @NotNull String state,
         @NotNull String zipCode
-) { }
+) {
+}

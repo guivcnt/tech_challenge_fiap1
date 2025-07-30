@@ -4,4 +4,5 @@ import jakarta.validation.constraints.NotNull;
 
 public record UserTypeRequest(
         @NotNull String userType
-) { }
+) {
+}

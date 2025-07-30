@@ -1,13 +1,10 @@
 package br.com.dinewise.application.service;
 
 import br.com.dinewise.application.entity.MenuEntity;
-import br.com.dinewise.application.entity.RestaurantEntity;
 import br.com.dinewise.application.exception.DineWiseResponseError;
 import br.com.dinewise.application.repository.MenuRepository;
 import br.com.dinewise.application.repository.RestaurantRepository;
-import br.com.dinewise.application.repository.UserRepository;
 import br.com.dinewise.domain.requests.menu.MenuRequest;
-import br.com.dinewise.domain.requests.restaurant.RestaurantRequest;
 import br.com.dinewise.domain.responses.DineWiseResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

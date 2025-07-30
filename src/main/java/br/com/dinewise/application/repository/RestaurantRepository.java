@@ -9,8 +9,12 @@ import java.util.Optional;
 
 public interface RestaurantRepository {
     RestaurantEntity create(RestaurantRequest request, Long idUser) throws DineWiseResponseError;
+
     List<RestaurantEntity> getAll();
+
     Optional<RestaurantEntity> get(Long id) throws DineWiseResponseError;
+
     Optional<RestaurantEntity> update(Long idRestaurant, RestaurantRequest request, Long idNewUser) throws DineWiseResponseError;
+
     Optional<RestaurantEntity> delete(Long id) throws DineWiseResponseError;
 }

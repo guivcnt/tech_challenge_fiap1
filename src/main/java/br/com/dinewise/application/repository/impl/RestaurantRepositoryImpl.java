@@ -41,22 +41,22 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
 
             this.jdbcClient
                     .sql("""
-                    INSERT INTO restaurants (
-                         name,
-                         type_cuisine,
-                         operation_hours,
-                         user_id_owner,
-                         address_id,
-                         last_date_modified
-                    ) VALUES (
-                        :name,
-                        :typeCuisine,
-                        :operationHours,
-                        :idUser,
-                        :addressId,
-                        :lastDateModified
-                    )
-                    """)
+                            INSERT INTO restaurants (
+                                 name,
+                                 type_cuisine,
+                                 operation_hours,
+                                 user_id_owner,
+                                 address_id,
+                                 last_date_modified
+                            ) VALUES (
+                                :name,
+                                :typeCuisine,
+                                :operationHours,
+                                :idUser,
+                                :addressId,
+                                :lastDateModified
+                            )
+                            """)
                     .param("name", request.name())
                     .param("typeCuisine", request.typeCuisine())
                     .param("operationHours", request.operationHours())
@@ -70,11 +70,11 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
 
             return new RestaurantEntity(id, request.name(), request.typeCuisine(), request.operationHours(), idUser, addressEntity.getId(), dateTime);
 
-        } catch (DuplicateKeyException e){
+        } catch (DuplicateKeyException e) {
             log.error("Restaurante já existente -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("Restaurant already exists", HttpStatus.CONFLICT);
 
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error("Erro ao cadastrar restaurante -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("Error creating restaurant", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -93,16 +93,15 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
         try {
             return this.jdbcClient
                     .sql("""
-                        SELECT id id, name name, type_cuisine typeCuisine, operation_hours operationHours,
-                               user_id_owner userIdOwner, address_id addressId, last_date_modified lastDateModified
-                        FROM restaurants
-                        WHERE id = :restaurantId
-                    """)
+                                SELECT id id, name name, type_cuisine typeCuisine, operation_hours operationHours,
+                                       user_id_owner userIdOwner, address_id addressId, last_date_modified lastDateModified
+                                FROM restaurants
+                                WHERE id = :restaurantId
+                            """)
                     .param("restaurantId", id)
                     .query(RestaurantEntity.class)
                     .optional();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Erro ao retornar endereço -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("Error get restaurant", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -117,28 +116,28 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
 
             int rowsChanged = this.jdbcClient
                     .sql("""
-                UPDATE restaurants
-                SET name = :name, type_cuisine = :typeCuisine, operation_hours = :operationHours,
-                    user_id_owner = :userId, last_date_modified = :lastDateModified
-                WHERE id = :restaurantId
-            """)
-                .param("name", request.name())
-                .param("typeCuisine", request.typeCuisine())
-                .param("operationHours", request.operationHours())
-                .param("userId", idNewUser)
-                .param("restaurantId", idRestaurant)
-                .param("lastDateModified", timestampDateTime)
-                .update();
+                                UPDATE restaurants
+                                SET name = :name, type_cuisine = :typeCuisine, operation_hours = :operationHours,
+                                    user_id_owner = :userId, last_date_modified = :lastDateModified
+                                WHERE id = :restaurantId
+                            """)
+                    .param("name", request.name())
+                    .param("typeCuisine", request.typeCuisine())
+                    .param("operationHours", request.operationHours())
+                    .param("userId", idNewUser)
+                    .param("restaurantId", idRestaurant)
+                    .param("lastDateModified", timestampDateTime)
+                    .update();
 
             this.jdbcClient
                     .sql("""
-                UPDATE addresses
-                SET public_place = :publicPlace, house_number = :houseNumber, complement = :complement,
-                    neighborhood = :neighborhood, city = :city, state = :state, zip_code = :zipCode
-                FROM restaurants re
-                WHERE re.id = :restaurantId and
-                      re.address_id = addresses.id
-            """)
+                                UPDATE addresses
+                                SET public_place = :publicPlace, house_number = :houseNumber, complement = :complement,
+                                    neighborhood = :neighborhood, city = :city, state = :state, zip_code = :zipCode
+                                FROM restaurants re
+                                WHERE re.id = :restaurantId and
+                                      re.address_id = addresses.id
+                            """)
                     .param("publicPlace", request.address().street())
                     .param("houseNumber", request.address().houseNumber())
                     .param("complement", request.address().complement())
@@ -154,17 +153,16 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
             }
 
             return Optional.of(new RestaurantEntity(
-                    idRestaurant,
-                    request.name(),
-                    request.typeCuisine(),
-                    request.operationHours(),
-                    idNewUser,
-                    null,
-                    dateTime
-                )
+                            idRestaurant,
+                            request.name(),
+                            request.typeCuisine(),
+                            request.operationHours(),
+                            idNewUser,
+                            null,
+                            dateTime
+                    )
             );
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             log.error("Erro ao atualizar restaurante -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("Error updating restaurant", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -181,12 +179,12 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
             }
 
             int rowsChanged = this.jdbcClient
-                .sql("""
-                    DELETE FROM restaurants
-                    WHERE id = :id;
-                """)
-                .param("id", id)
-                .update();
+                    .sql("""
+                                DELETE FROM restaurants
+                                WHERE id = :id;
+                            """)
+                    .param("id", id)
+                    .update();
 
             if (rowsChanged == 0) {
                 return Optional.empty();
@@ -195,8 +193,7 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
             addressRepository.delete(entity.get().getAddressId());
 
             return Optional.of(new RestaurantEntity(id, null, null, null, null, null, null));
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             log.error("Erro ao deletar restaurante -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("Error deleting restaurant", HttpStatus.INTERNAL_SERVER_ERROR);
         }

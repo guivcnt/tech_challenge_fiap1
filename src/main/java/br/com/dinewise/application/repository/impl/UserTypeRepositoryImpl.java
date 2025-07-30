@@ -1,6 +1,5 @@
 package br.com.dinewise.application.repository.impl;
 
-import br.com.dinewise.application.entity.UserEntity;
 import br.com.dinewise.application.entity.UserTypeEntity;
 import br.com.dinewise.application.exception.DineWiseResponseError;
 import br.com.dinewise.application.repository.UserTypeRepository;
@@ -50,7 +49,7 @@ public class UserTypeRepositoryImpl implements UserTypeRepository {
             log.error("Tipo de usuário já cadastrado -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("User type already exists", HttpStatus.CONFLICT);
 
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error("Erro ao cadastrar o tipo do usuário -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("Error creating user type", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -78,11 +77,11 @@ public class UserTypeRepositoryImpl implements UserTypeRepository {
         try {
             int rowsChanged = this.jdbcClient
                     .sql("""
-                UPDATE user_types
-                SET type = :newType,
-                    last_date_modified = CURRENT_TIMESTAMP
-                WHERE id = :id
-            """)
+                                UPDATE user_types
+                                SET type = :newType,
+                                    last_date_modified = CURRENT_TIMESTAMP
+                                WHERE id = :id
+                            """)
                     .param("newType", request.userType())
                     .param("id", id)
                     .update();
@@ -97,7 +96,7 @@ public class UserTypeRepositoryImpl implements UserTypeRepository {
             log.error("Tipo de usuário já cadastrado -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("User type already exists", HttpStatus.CONFLICT);
 
-        }  catch (Exception e) {
+        } catch (Exception e) {
             log.error("Erro ao atualizar o tipo -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("Error updating type", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -121,7 +120,7 @@ public class UserTypeRepositoryImpl implements UserTypeRepository {
             log.error("O tipo de usuário está sendo utilizado, e por isso não podemos excluir -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("User type is being used", HttpStatus.CONFLICT);
 
-        }  catch (Exception e) {
+        } catch (Exception e) {
             log.error("Erro ao deletar tipo do usuário -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("Error deleting user type", HttpStatus.INTERNAL_SERVER_ERROR);
         }

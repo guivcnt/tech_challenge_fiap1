@@ -24,7 +24,7 @@ public class MenuController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MenuEntity>> getAll(){
+    public ResponseEntity<List<MenuEntity>> getAll() {
         return this.service.getAll();
     }
 

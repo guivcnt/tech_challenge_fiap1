@@ -10,4 +10,5 @@ public record UserRequest(
         @NotNull String password,
         @NotNull String userType,
         @NotNull AddressRequest address
-) { }
+) {
+}

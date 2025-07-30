@@ -1,7 +1,6 @@
 package br.com.dinewise.application.repository.impl;
 
 import br.com.dinewise.application.entity.AddressEntity;
-import br.com.dinewise.application.entity.MenuEntity;
 import br.com.dinewise.application.exception.DineWiseResponseError;
 import br.com.dinewise.application.repository.AddressRepository;
 import br.com.dinewise.domain.requests.address.AddressRequest;
@@ -61,16 +60,15 @@ public class AddressRepositoryImpl implements AddressRepository {
         try {
             return this.jdbcClient
                     .sql("""
-                    SELECT iid id, public_place publicPlace, house_number houseNumber, complement complement,
-                           neighborhood neighborhood, city city, state state, zip_code zipCode, last_date_modified lastDateModified
-                    FROM addresses
-                    WHERE id = :id
-                """)
+                                SELECT iid id, public_place publicPlace, house_number houseNumber, complement complement,
+                                       neighborhood neighborhood, city city, state state, zip_code zipCode, last_date_modified lastDateModified
+                                FROM addresses
+                                WHERE id = :id
+                            """)
                     .param("id", id)
                     .query(AddressEntity.class)
                     .optional();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Erro ao retornar um endereço -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("Error get address", HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -45,9 +45,9 @@ public class UserRepositoryImpl implements UserRepository {
 
             this.jdbcClient
                     .sql("""
-                        INSERT INTO users (name, email, login, password, user_type_id, address_id, last_date_modified)
-                        VALUES (:name, :email, :login, :password, :userType, :addressId, :lastDateModified)
-                    """)
+                                INSERT INTO users (name, email, login, password, user_type_id, address_id, last_date_modified)
+                                VALUES (:name, :email, :login, :password, :userType, :addressId, :lastDateModified)
+                            """)
                     .param("name", request.name())
                     .param("email", request.email())
                     .param("login", request.login())
@@ -62,11 +62,11 @@ public class UserRepositoryImpl implements UserRepository {
 
             return new UserEntity(userId, request.name(), request.email(), request.login(), request.password(), request.userType(), addressEntity.getId(), dateTime);
 
-        } catch (DuplicateKeyException e){
+        } catch (DuplicateKeyException e) {
             log.error("Usuário já existente -> {}", e.getMessage());
             throw new DineWiseResponseError("User already exists", HttpStatus.CONFLICT);
 
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error("Erro ao cadastrar usuário -> {}", e.getMessage());
             throw new DineWiseResponseError("Error creating user", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -84,8 +84,7 @@ public class UserRepositoryImpl implements UserRepository {
                     .param("password", password)
                     .query(UserEntity.class)
                     .optional();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Erro ao logar usuário -> {}", e.getMessage());
             throw new DineWiseResponseError("Error logging in", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -94,9 +93,9 @@ public class UserRepositoryImpl implements UserRepository {
     public List<UserEntity> getAll() {
         return this.jdbcClient
                 .sql("""
-                    SELECT u.id, name, email, login, t.type userType, u.last_date_modified, u.address_id addressId
-                    FROM users as u JOIN user_types as t on t.id = u.user_type_id
-                """)
+                            SELECT u.id, name, email, login, t.type userType, u.last_date_modified, u.address_id addressId
+                            FROM users as u JOIN user_types as t on t.id = u.user_type_id
+                        """)
                 .query(UserEntity.class)
                 .list();
     }
@@ -105,15 +104,14 @@ public class UserRepositoryImpl implements UserRepository {
         try {
             return this.jdbcClient
                     .sql("""
-                        SELECT u.id, name, email, login, t.type userType, u.last_date_modified, u.address_id addressId
-                        FROM users as u JOIN user_types as t on t.id = u.user_type_id
-                        WHERE u.id = :userId
-                    """)
+                                SELECT u.id, name, email, login, t.type userType, u.last_date_modified, u.address_id addressId
+                                FROM users as u JOIN user_types as t on t.id = u.user_type_id
+                                WHERE u.id = :userId
+                            """)
                     .param("userId", userId)
                     .query(UserEntity.class)
                     .optional();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Erro ao retornar usuário -> {}", e.getMessage());
             throw new DineWiseResponseError("Error get user", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -123,15 +121,14 @@ public class UserRepositoryImpl implements UserRepository {
         try {
             return this.jdbcClient
                     .sql("""
-                        SELECT u.id, name, email, login, t.type userType, u.last_date_modified, u.address_id addressId
-                        FROM users as u JOIN user_types as t on t.id = u.user_type_id
-                        WHERE u.login = :login
-                    """)
+                                SELECT u.id, name, email, login, t.type userType, u.last_date_modified, u.address_id addressId
+                                FROM users as u JOIN user_types as t on t.id = u.user_type_id
+                                WHERE u.login = :login
+                            """)
                     .param("login", login)
                     .query(UserEntity.class)
                     .optional();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Erro ao retornar usuário -> {}", e.getMessage());
             throw new DineWiseResponseError("Error get user", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -143,11 +140,11 @@ public class UserRepositoryImpl implements UserRepository {
         try {
             int rowsChanged = this.jdbcClient
                     .sql("""
-                UPDATE users
-                SET name = :name, email = :email, login = :login, password = :password, 
-                    user_type_id = :userType, last_date_modified = CURRENT_TIMESTAMP
-                WHERE id = :userId
-            """)
+                                UPDATE users
+                                SET name = :name, email = :email, login = :login, password = :password, 
+                                    user_type_id = :userType, last_date_modified = CURRENT_TIMESTAMP
+                                WHERE id = :userId
+                            """)
                     .param("name", request.name())
                     .param("email", request.email())
                     .param("login", request.login())
@@ -158,13 +155,13 @@ public class UserRepositoryImpl implements UserRepository {
 
             this.jdbcClient
                     .sql("""
-                UPDATE addresses
-                SET public_place = :publicPlace, house_number = :houseNumber, complement = :complement, 
-                    neighborhood = :neighborhood, city = :city, state = :state, zip_code = :zipCode
-                FROM users us
-                WHERE us.user_id = :userId and 
-                      us.address_id = addresses.id
-            """)
+                                UPDATE addresses
+                                SET public_place = :publicPlace, house_number = :houseNumber, complement = :complement, 
+                                    neighborhood = :neighborhood, city = :city, state = :state, zip_code = :zipCode
+                                FROM users us
+                                WHERE us.user_id = :userId and 
+                                      us.address_id = addresses.id
+                            """)
                     .param("publicPlace", request.address().street())
                     .param("houseNumber", request.address().houseNumber())
                     .param("complement", request.address().complement())
@@ -191,8 +188,7 @@ public class UserRepositoryImpl implements UserRepository {
                     entity.get().getAddressId(),
                     LocalDateTime.now()
             ));
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             log.error("Erro ao atualizar usuário -> {}", e.getMessage());
             throw new DineWiseResponseError("Error updating user", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -203,12 +199,12 @@ public class UserRepositoryImpl implements UserRepository {
         try {
             int rowsChanged = this.jdbcClient
                     .sql("""
-                UPDATE users
-                SET password = :newPassword, 
-                    last_date_modified = CURRENT_TIMESTAMP
-                WHERE   id = :userId
-                    and password = :oldPassword
-            """)
+                                UPDATE users
+                                SET password = :newPassword, 
+                                    last_date_modified = CURRENT_TIMESTAMP
+                                WHERE   id = :userId
+                                    and password = :oldPassword
+                            """)
                     .param("newPassword", request.newPassword())
                     .param("userId", userId)
                     .param("oldPassword", request.oldPassword())
@@ -224,8 +220,7 @@ public class UserRepositoryImpl implements UserRepository {
                     .param("newPassword", request.newPassword())
                     .query(UserEntity.class)
                     .optional();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             log.error("Erro ao atualizar usuário -> {}", e.getMessage());
             throw new DineWiseResponseError("Error updating user", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -236,11 +231,11 @@ public class UserRepositoryImpl implements UserRepository {
         try {
             int rowsChanged = this.jdbcClient
                     .sql("""
-                UPDATE users
-                SET user_type_id = :newType, 
-                    last_date_modified = CURRENT_TIMESTAMP
-                WHERE   id = :userId
-            """)
+                                UPDATE users
+                                SET user_type_id = :newType, 
+                                    last_date_modified = CURRENT_TIMESTAMP
+                                WHERE   id = :userId
+                            """)
                     .param("newType", userType)
                     .param("userId", userId)
                     .update();
@@ -254,8 +249,7 @@ public class UserRepositoryImpl implements UserRepository {
                     .param("userId", userId)
                     .query(UserEntity.class)
                     .optional();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             log.error("Erro ao atualizar usuário -> {}", e.getMessage());
             throw new DineWiseResponseError("Error updating user", HttpStatus.INTERNAL_SERVER_ERROR);
         }

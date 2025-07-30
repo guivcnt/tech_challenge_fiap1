@@ -1,7 +1,6 @@
 package br.com.dinewise.application.repository.impl;
 
 import br.com.dinewise.application.entity.MenuEntity;
-import br.com.dinewise.application.entity.RestaurantEntity;
 import br.com.dinewise.application.exception.DineWiseResponseError;
 import br.com.dinewise.application.repository.MenuRepository;
 import br.com.dinewise.domain.requests.menu.MenuRequest;
@@ -35,24 +34,24 @@ public class MenuRepositoryImpl implements MenuRepository {
 
             this.jdbcClient
                     .sql("""
-                INSERT INTO menu (
-                     name,
-                     description,
-                     price,
-                     only_for_delivery,
-                     image_path,
-                     restaurant_id,
-                     last_date_modified
-                ) VALUES (
-                    :name,
-                    :description,
-                    :price,
-                    :onlyForDelivery,
-                    :imagePath,
-                    :restaurantId,
-                    :lastDateModified
-                )
-                """)
+                            INSERT INTO menu (
+                                 name,
+                                 description,
+                                 price,
+                                 only_for_delivery,
+                                 image_path,
+                                 restaurant_id,
+                                 last_date_modified
+                            ) VALUES (
+                                :name,
+                                :description,
+                                :price,
+                                :onlyForDelivery,
+                                :imagePath,
+                                :restaurantId,
+                                :lastDateModified
+                            )
+                            """)
                     .param("name", request.name())
                     .param("description", request.description())
                     .param("price", request.price())
@@ -68,7 +67,7 @@ public class MenuRepositoryImpl implements MenuRepository {
             return new MenuEntity(id, request.name(), request.description(),
                     request.price(), request.onlyForDelivery(), request.imagePath(), request.restaurantId(), dateTime);
 
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error("Erro ao cadastrar item no cardápio -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("Error creating menu item", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -87,16 +86,15 @@ public class MenuRepositoryImpl implements MenuRepository {
         try {
             return this.jdbcClient
                     .sql("""
-                    SELECT id id, name name, description description, price price, only_for_delivery onlyForDelivery,
-                           image_path imagePath, restaurant_id restaurantId, last_date_modified lastDateModified
-                    FROM menu
-                    WHERE id = :menuId
-                """)
+                                SELECT id id, name name, description description, price price, only_for_delivery onlyForDelivery,
+                                       image_path imagePath, restaurant_id restaurantId, last_date_modified lastDateModified
+                                FROM menu
+                                WHERE id = :menuId
+                            """)
                     .param("menuId", id)
                     .query(MenuEntity.class)
                     .optional();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Erro ao retornar um item do cardápio -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("Error get menu item", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -109,13 +107,13 @@ public class MenuRepositoryImpl implements MenuRepository {
             Timestamp timestampDateTime = Timestamp.valueOf(dateTime);
 
             int rowsChanged = this.jdbcClient
-                .sql("""
-                    UPDATE menu
-                    SET name = :name, description = :description, price = :price,
-                        only_for_delivery = :onlyForDelivery, image_path = :imagePath,
-                        restaurant_id = :restaurantId, last_date_modified = :lastDateModified
-                    WHERE id = :idMenu
-                """)
+                    .sql("""
+                                UPDATE menu
+                                SET name = :name, description = :description, price = :price,
+                                    only_for_delivery = :onlyForDelivery, image_path = :imagePath,
+                                    restaurant_id = :restaurantId, last_date_modified = :lastDateModified
+                                WHERE id = :idMenu
+                            """)
                     .param("name", request.name())
                     .param("description", request.description())
                     .param("price", request.price())
@@ -131,12 +129,11 @@ public class MenuRepositoryImpl implements MenuRepository {
             }
 
             return Optional.of(new MenuEntity(
-                    idMenu, request.name(), request.description(), request.price(),
-                    request.onlyForDelivery(), request.imagePath(), request.restaurantId(), dateTime
-                )
+                            idMenu, request.name(), request.description(), request.price(),
+                            request.onlyForDelivery(), request.imagePath(), request.restaurantId(), dateTime
+                    )
             );
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             log.error("Erro ao atualizar item do menu -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("Error updating menu item", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -146,17 +143,16 @@ public class MenuRepositoryImpl implements MenuRepository {
     public Optional<MenuEntity> delete(Long id) throws DineWiseResponseError {
         try {
             int rowsChanged = this.jdbcClient
-                .sql("DELETE FROM menu WHERE id = :idMenu")
-                .param("idMenu", id)
-                .update();
+                    .sql("DELETE FROM menu WHERE id = :idMenu")
+                    .param("idMenu", id)
+                    .update();
 
             if (rowsChanged == 0) {
                 return Optional.empty();
             }
 
             return Optional.of(new MenuEntity(id, null, null, null, null, null, null, null));
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             log.error("Erro ao deletar item do menu -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("Error deleting menu item", HttpStatus.INTERNAL_SERVER_ERROR);
         }
