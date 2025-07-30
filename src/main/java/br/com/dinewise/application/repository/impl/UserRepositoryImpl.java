@@ -67,7 +67,7 @@ public class UserRepositoryImpl implements UserRepository {
             throw new DineWiseResponseError("User already exists", HttpStatus.CONFLICT);
 
         } catch (Exception e) {
-            log.error("Erro ao cadastrar usuário -> {}", e.getMessage());
+            log.error("Erro ao cadastrar usuário -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("Error creating user", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

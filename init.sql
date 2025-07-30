@@ -51,5 +51,5 @@ CREATE TABLE menu (
     image_path VARCHAR(500),
     last_date_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     restaurant_id INT NOT NULL,
-    FOREIGN KEY (restaurant_id) REFERENCES restaurants (id)
+    FOREIGN KEY (restaurant_id) REFERENCES restaurants (id) ON DELETE CASCADE
 );

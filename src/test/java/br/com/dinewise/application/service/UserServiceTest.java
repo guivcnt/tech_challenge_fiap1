@@ -220,6 +220,22 @@ class UserServiceTest {
     }
 
     @Test
+    void testUpdateUserUserTypeNotFound() throws DineWiseResponseError {
+        UserRequest request = buildUserRequest();
+        UserTypeEntity userType = new UserTypeEntity();
+
+        when(userTypeRepository.read(any(UserTypeRequest.class))).thenReturn(Optional.empty());
+        when(userRepository.updateUser(1L, request, userType.getId())).thenReturn(Optional.empty());
+
+        ResponseEntity<DineWiseResponse> response = userService.updateUser(1L, request);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("User type not found", response.getBody().message());
+        assertEquals(HttpStatus.NOT_FOUND, response.getBody().status());
+    }
+
+    @Test
     void testUpdatePasswordSuccess() throws DineWiseResponseError {
         ChangePasswordRequest request = buildChangePasswordRequest();
         UserEntity user = new UserEntity();
