@@ -31,16 +31,46 @@ A camada de serviço utiliza a classe ResponseEntity para padronizar as resposta
 Descrição dos Endpoints da API
 Tabela de Endpoints
 
-| Endpoint                     | Método | Descrição                                                                 |
-|------------------------------|--------|---------------------------------------------------------------------------|
-| /api/v1/dinewise/login       | POST   | Login do usuário.                                                         |
-| /api/v1/dinewise/user        | POST   | Criação do usuário.                                                       |
-| /api/v1/dinewise/user/{id}   | PUT    | Atualiza dados do usuário, como senha, endereço, e-mail e outros dados.   |
-| /api/v1/dinewise/user/{id}   | DELETE | Deleta o usuário e o endereço do mesmo.                                   |
+### API Endpoints - DineWise
 
-Exemplos de requisição e resposta
-Descreva aqui exemplos de requisições e possíveis respostas.
+#### User Types
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| POST | `/api/v1/dinewise/userType` | Cria um novo tipo de usuário |
+| GET | `/api/v1/dinewise/userType` | Lista todos os tipos de usuário |
+| PUT | `/api/v1/dinewise/userType/{id}` | Atualiza um tipo de usuário pelo ID |
+| DELETE | `/api/v1/dinewise/userType/{id}` | Remove um tipo de usuário pelo ID |
 
+#### Users
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| POST | `/api/v1/dinewise/user` | Cria um novo usuário |
+| POST | `/api/v1/dinewise/user/login` | Realiza login de usuário |
+| GET | `/api/v1/dinewise/user` | Lista todos os usuários |
+| GET | `/api/v1/dinewise/user/id/{userId}` | Busca usuário pelo ID |
+| GET | `/api/v1/dinewise/user/login/{userLogin}` | Busca usuário pelo login |
+| PUT | `/api/v1/dinewise/user/{userId}` | Atualiza dados do usuário pelo ID |
+| PUT | `/api/v1/dinewise/user/{userId}/password` | Atualiza senha do usuário pelo ID |
+| PUT | `/api/v1/dinewise/user/{userId}/type` | Atualiza tipo do usuário pelo ID |
+| DELETE | `/api/v1/dinewise/user/{userId}` | Remove usuário pelo ID |
+
+#### Menu
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| POST | `/api/v1/dinewise/menu` | Cria um novo menu |
+| GET | `/api/v1/dinewise/menu` | Lista todos os menus |
+| GET | `/api/v1/dinewise/menu/{id}` | Busca menu pelo ID |
+| PUT | `/api/v1/dinewise/menu/{id}` | Atualiza menu pelo ID |
+| DELETE | `/api/v1/dinewise/menu/{id}` | Remove menu pelo ID |
+
+#### Restaurant
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| POST | `/api/v1/dinewise/restaurant` | Cria um novo restaurante |
+| GET | `/api/v1/dinewise/restaurant` | Lista todos os restaurantes |
+| GET | `/api/v1/dinewise/restaurant/{id}` | Busca restaurante pelo ID |
+| PUT | `/api/v1/dinewise/restaurant/{id}` | Atualiza restaurante pelo ID |
+| DELETE | `/api/v1/dinewise/restaurant/{id}` | Remove restaurante |
 
 ### Configuração do Projeto
 
