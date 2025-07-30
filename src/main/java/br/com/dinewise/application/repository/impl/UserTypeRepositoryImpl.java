@@ -7,6 +7,7 @@ import br.com.dinewise.application.repository.UserTypeRepository;
 import br.com.dinewise.domain.requests.user.UserTypeRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -91,8 +92,12 @@ public class UserTypeRepositoryImpl implements UserTypeRepository {
             }
 
             return this.read(request);
-        }
-        catch (Exception e){
+
+        } catch (DuplicateKeyException e) {
+            log.error("Tipo de usuário já cadastrado -> {} / {}", e.getMessage(), e.getCause());
+            throw new DineWiseResponseError("User type already exists", HttpStatus.CONFLICT);
+
+        }  catch (Exception e) {
             log.error("Erro ao atualizar o tipo -> {} / {}", e.getMessage(), e.getCause());
             throw new DineWiseResponseError("Error updating type", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -111,10 +116,14 @@ public class UserTypeRepositoryImpl implements UserTypeRepository {
             }
 
             return Optional.of(new UserTypeEntity(id, null, null));
-        }
-        catch (Exception e){
-            log.error("Erro ao deletar usuário -> {} / {}", e.getMessage(), e.getCause());
-            throw new DineWiseResponseError("Error deleting user", HttpStatus.INTERNAL_SERVER_ERROR);
+
+        } catch (DataIntegrityViolationException e) {
+            log.error("O tipo de usuário está sendo utilizado, e por isso não podemos excluir -> {} / {}", e.getMessage(), e.getCause());
+            throw new DineWiseResponseError("User type is being used", HttpStatus.CONFLICT);
+
+        }  catch (Exception e) {
+            log.error("Erro ao deletar tipo do usuário -> {} / {}", e.getMessage(), e.getCause());
+            throw new DineWiseResponseError("Error deleting user type", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
