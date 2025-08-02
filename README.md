@@ -108,3 +108,10 @@ Link para a Collection do Postman
 
 https://github.com/guivcnt/tech_challenge_fiap1/blob/main/Tech%20Challenge.postman_collection.json
 
+
+### Vídeos
+
+Link para o vídeo sobre a fase 2
+
+https://www.youtube.com/watch?v=1k2O0e0sUkQ
+
